@@ -21,8 +21,7 @@
 1. Download pre-trained model
 
    [LateTemporalModelong3DCNN](https://github.com/artest08/LateTemporalModeling3DCNN) Go to this site, download the pre-trained model and save it.
-   
-3. Make validation datasets
+2. Make validation datasets
 
    Prepare HMDB51 datasets and put the downloaded data file(*.avi) in "datasets/HMDB51". Then run the code shown below.
 
@@ -30,14 +29,14 @@
    cd scripts/eval
    python make_datasets.py
    ```
-4. Test of the dataset
+3. Test of the dataset
 
    After completing the previous process,image file will exist in the format 'img_%05d.jpg' in "datasets/hmdb51_frames". If you check that the file is created and run the code below, you can see the test result.
 
    ```python
    python spatial_demo_bert.py --arch=rgb_r2plus1d_64f_34_bert10 --split=1
    ```
-5. Visualization of the dataset
+4. Visualization of the dataset
 
    If you want to visualize the result, just run the code below.
 
@@ -45,14 +44,15 @@
    python recognition.py --arch=rgb_r2plus1d_64f_34_bert10 --split=1
    ```
 
-
 ## Citaton
 
-> @inproceedings{kalfaoglu2020late,
-> title={Late temporal modeling in 3d cnn architectures with bert for action recognition},
-> author={Kalfaoglu, M Esat and Kalkan, Sinan and Alatan, A Aydin},
-> booktitle={European Conference on Computer Vision},
-> pages={731--747},
-> year={2020},
-> organization={Springer}
-> }
+```python
+@inproceedings{kalfaoglu2020late,
+title={Late temporal modeling in 3d cnn architectures with bert for action recognition},
+author={Kalfaoglu, M Esat and Kalkan, Sinan and Alatan, A Aydin},
+booktitle={European Conference on Computer Vision},
+pages={731--747},
+year={2020},
+organization={Springer}
+}
+```
