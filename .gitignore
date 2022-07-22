@@ -5,11 +5,14 @@
 *.tar
 *.pt
 *.csv
+*.avi
 
 **/__pycache__
 
 /checkpoint
 /datasets/hmdb51_frames
+/datasets/1frame
+/dataset/video_input
 
 /runs
 
