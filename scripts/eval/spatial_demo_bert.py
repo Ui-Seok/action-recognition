@@ -154,6 +154,7 @@ def main():
     line_id = 1
     match_count = 0
     match_count_top3 = 0
+    match_count_top5 = 0
 
     y_true=[]
     y_pred=[]
@@ -186,7 +187,7 @@ def main():
         estimatedTime=end-start
         timeList.append(estimatedTime)
         
-        pred_index, mean_result, top3 = spatial_prediction
+        pred_index, mean_result, top3, top5 = spatial_prediction
 
             
         print("Sample %d/%d: GT: %d, Prediction: %d" % (line_id, len(val_list), input_video_label, pred_index))
@@ -196,6 +197,8 @@ def main():
             match_count += 1
         if input_video_label in top3:
             match_count_top3 += 1
+        if input_video_label in top5:
+            match_count_top5 += 1
 
         line_id += 1
         y_true.append(input_video_label)
@@ -206,6 +209,7 @@ def main():
 
     print("Accuracy with mean calculation is %4.4f" % (float(match_count)/len(val_list)))
     print("top3 accuracy %4.4f" % (float(match_count_top3)/len(val_list)))
+    print("top5 accuracy %4.4f" % (float(match_count_top5)/len(val_list)))
     print(modelLocation)
     print("Mean Estimated Time %0.4f" % (np.mean(timeList)))  
     print('one clips')

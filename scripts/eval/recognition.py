@@ -1,11 +1,13 @@
 import os, sys
 from statistics import mean
 import numpy as np
+import pandas as pd
+import pickle
 
 import time
 import argparse
 
-from ptflops import get_model_complexity_info
+# from ptflops import get_model_complexity_info
 
 import torch
 import torch.nn.parallel
@@ -123,41 +125,72 @@ def main():
     model_time = model_end_time - model_start_time
     print("Action recognition model is loaded in %4.4f seconds." % (model_time))
 
-    input_video = '../../datasets/video_input'
-    image_path = os.path.join(datasetFolder, "1frame")
-    
-    # video to img and save imgs
-    video2img(input_video, image_path)
-    
-    spatial_prediction = VideoSpatialPrediction3D_bert(
-        image_path,
-        spatial_net,
-        num_categories,
-        args.arch,
-        start_frame,
-        num_frames = 0,
-        num_seg = num_seg_3D,
-        length = length,
-        extension = 'img_{0:05d}.jpg',
-        ten_crop = ten_crop_enabled
-    )
-    
-    pred_index, mean_result, top5 = spatial_prediction
-    top_1_classname = hmdb51_class[pred_index]
-    
-    print(mean_result)
-    print(top_1_classname)
-    print('------top5------')
-    for top in top5:
-        print(hmdb51_class[top])
-    print('----------------')
-    # print(modelLocation) 
+    # input_video = '../../datasets/video_input'
+    video_names = ['Explosion', 'Fighting', 'RoadAccidents', 'Robbery', 'Shooting', 
+                   'Shoplifting', 'Stealing', 'Vandalism']
+    # video_names = os.listdir("../../datasets/UCF-Crime/Burglary")
+    for video_name in video_names: 
+        print(video_name, 'START')
+        video_name = os.listdir(f"../../datasets/UCF-Crime/{video_name}")
+        for vd in video_name:
+            print(vd)
+            image_path = os.path.join(datasetFolder, f"UCF-Crime/{video_name}/{vd}")
+            
+            # video to img and save imgs
+            # video2img(input_video, image_path)
+            
+            img_list = os.listdir(image_path)
+            len_32 = len(img_list) // 32
+            vis_img_list = []
+            result_list = []
+            if (len_32 / 64) > 5:
+                sampling_rate = (len_32 // 64)
+                print(sampling_rate)
+            else: sampling_rate = 5
+            for i in range(1, len(img_list)):
+                if i % len_32 == 0:
+                    vis_img_list.append(i)
 
-    if args.window_val:
-        print("window%d.txt" %(args.window))
-        
+                    spatial_prediction = VideoSpatialPrediction3D_bert(
+                        img_l = vis_img_list,
+                        vid_name = image_path,
+                        net = spatial_net,
+                        num_categories = num_categories,
+                        architecture_name = args.arch,
+                        start_frame = start_frame,
+                        num_frames = 0,
+                        num_seg = num_seg_3D,
+                        length = length,
+                        extension = 'img_{0:05d}.jpg',
+                        ten_crop = ten_crop_enabled
+                    )
+                    
+                    pred_index, mean_result, top3, top5 = spatial_prediction
+                    top_1_classname = hmdb51_class[pred_index]
+                    
+                    # df = pd.DataFrame(mean_result)
+                    # df.to_csv('result.csv', index = False)
+                    
+                    # print(mean_result)
+                    print(top_1_classname)
+                    print('------top5------')
+                    for top in top5:
+                        print(hmdb51_class[top])
+                    print(vis_img_list)
+                    print('----------------')
+                    result_list.append(mean_result)
+                    vis_img_list = []
+                elif i % sampling_rate == 0:
+                    vis_img_list.append(i)
+            df = pd.DataFrame(result_list)
+            df.to_csv('result.csv', index = False)
+            
+            with open(f'../pickle/{video_name}/{vd}.pkl', 'wb') as f:
+                pickle.dump(result_list, f, protocol=pickle.HIGHEST_PROTOCOL)
+    # print(modelLocation)
+            
     # img to video and write pred_index
-    img2video(image_path, top5, hmdb51_class)
+    # img2video(image_path, top5, hmdb51_class)
 
 if __name__ == "__main__":
     main()

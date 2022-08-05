@@ -12,12 +12,13 @@
 /checkpoint
 /datasets/hmdb51_frames
 /datasets/1frame
-/dataset/video_input
+/datasets/UCF-Crime
+/datasets/HMDB51
 
 /runs
 
 /weights
 
-
+/scripts/pickle
 
 
