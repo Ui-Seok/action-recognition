@@ -134,8 +134,7 @@ def main():
         video_name = os.listdir(f"../../datasets/UCF-Crime/{video_name}")
         for vd in video_name:
             print(vd)
-            image_path = os.path.join(datasetFolder, f"UCF-Crime/{video_name}/{vd}")
-            
+            image_path = os.path.join(datasetFolder, f"UCF-Crime/{vd[:-8]}/{vd}")
             # video to img and save imgs
             # video2img(input_video, image_path)
             
@@ -185,7 +184,7 @@ def main():
             df = pd.DataFrame(result_list)
             df.to_csv('result.csv', index = False)
             
-            with open(f'../pickle/{video_name}/{vd}.pkl', 'wb') as f:
+            with open(f'../pickle/{vd[:-8]}/{vd}.pkl', 'wb') as f:
                 pickle.dump(result_list, f, protocol=pickle.HIGHEST_PROTOCOL)
     # print(modelLocation)
             
