@@ -126,15 +126,18 @@ def main():
     print("Action recognition model is loaded in %4.4f seconds." % (model_time))
 
     # input_video = '../../datasets/video_input'
-    video_names = ['Explosion', 'Fighting', 'RoadAccidents', 'Robbery', 'Shooting', 
-                   'Shoplifting', 'Stealing', 'Vandalism']
+    video_names = [
+                #     'Explosion', 'Fighting', 'RoadAccidents', 'Robbery', 'Shooting', 
+                #    'Shoplifting', 'Stealing', 'Vandalism',
+                   'Normal_Videos'
+                   ]
     # video_names = os.listdir("../../datasets/UCF-Crime/Burglary")
     for video_name in video_names: 
         print(video_name, 'START')
         video_name = os.listdir(f"../../datasets/UCF-Crime/{video_name}")
         for vd in video_name:
             print(vd)
-            image_path = os.path.join(datasetFolder, f"UCF-Crime/{vd[:-8]}/{vd}")
+            image_path = os.path.join(datasetFolder, f"UCF-Crime/{vd[:-9]}/{vd}")
             # video to img and save imgs
             # video2img(input_video, image_path)
             
@@ -184,7 +187,7 @@ def main():
             df = pd.DataFrame(result_list)
             df.to_csv('result.csv', index = False)
             
-            with open(f'../pickle/{vd[:-8]}/{vd}.pkl', 'wb') as f:
+            with open(f'../pickle/{vd[:-9]}/{vd}.pkl', 'wb') as f:
                 pickle.dump(result_list, f, protocol=pickle.HIGHEST_PROTOCOL)
     # print(modelLocation)
             
